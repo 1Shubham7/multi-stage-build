@@ -4,6 +4,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o cal .
+RUN go build -o calculator .
 
-ENTRYPOINT ["/cal"]
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/calculator .
+
+ENTRYPOINT ["/calculator"]
