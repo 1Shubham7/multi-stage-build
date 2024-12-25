@@ -1,0 +1,21 @@
+FROM ubuntu AS installer
+
+RUN apt-get update && apt-get install -y golang-go ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o calculator .
+
+FROM scratch
+
+COPY --from=installer /app/calculator /app
+
+ENTRYPOINT ["/calculator"]
+
+
